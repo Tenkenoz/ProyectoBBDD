@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compra</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="estiloCarrito.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="logo.png" alt="Logo" style="height: 40px;">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar productos">
+                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="cart-icon">
+                <span>Carrito</span>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+        </nav>
+        <div class="header-login animate__animated animate__pulse animate__infinite">
+            <a href="./logIn.html"><i class="fa-regular fa-user"></i><label>Mi cuenta</label></a>
+        </div>  
+    </header>
+
+    <main>
+        <!-- Carrito -->
+        <section class="cart">
+            <h2>Carrito</h2>
+            <!-- Productos cargados dinámicamente -->
+        </section>
+
+        <!-- Artículos guardados -->
+        <section class="saved-items">
+            <h3>Tus artículos</h3>
+            <!-- Productos cargados dinámicamente -->
+        </section>
+    </main>
+
+    <footer>
+        <span>Todos los derechos reservados</span>
+    </footer>
+
+    <script>
+        // URL del backend Flask
+        const API_URL = 'http://127.0.0.1:5000/productos';
+
+        // Función para cargar los productos
+        async function loadProducts() {
+            try {
+                const response = await fetch(API_URL);
+                const products = await response.json();
+
+                // Selección de secciones
+                const cartSection = document.querySelector('.cart');
+                const savedItemsSection = document.querySelector('.saved-items');
+
+                // Limpiar contenido inicial
+                cartSection.innerHTML = '<h2>Carrito</h2>';
+                savedItemsSection.innerHTML = '<h3>Tus artículos</h3>';
+
+                let subtotal = 0;
+
+                products.forEach(product => {
+                    // Renderizar productos en el carrito
+                    const cartItem = `
+                        <div class="cart-item">
+                            <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 100px; height: auto;">
+                            <div class="item-details">
+                                <h3>${product.Nombre}</h3>
+                                <p>${product.Descripcion}</p>
+                                <p>Precio: <strong>US$${product.Precio.toFixed(2)}</strong></p>
+                            </div>
+                            <div class="item-actions">
+                                <button>-</button>
+                                <input type="text" value="1" style="width: 30px; text-align: center;">
+                                <button>+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartSection.innerHTML += cartItem;
+
+                    // Actualizar subtotal
+                    subtotal += product.Precio;
+
+                    // Renderizar productos en "Tus artículos"
+                    const savedItem = `
+                        <div class="saved-item">
+                            <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 80px;">
+                            <div>
+                                <p>${product.Nombre}</p>
+                                <p><strong>US$${product.Precio.toFixed(2)}</strong></p>
+                            </div>
+                        </div>
+                    `;
+                    savedItemsSection.innerHTML += savedItem;
+                });
+
+                // Mostrar subtotal
+                const subtotalElement = `
+                    <div class="subtotal">
+                        <h3>Subtotal (${products.length} productos): US$${subtotal.toFixed(2)}</h3>
+                        <button>Proceder al pago</button>
+                    </div>
+                `;
+                cartSection.innerHTML += subtotalElement;
+
+            } catch (error) {
+                console.error('Error al cargar los productos:', error);
+            }
+        }
+
+        // Cargar los productos al cargar la página
+        window.onload = loadProducts;
+    </script>
+</body>
+</html>
