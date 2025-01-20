@@ -1,0 +1,76 @@
+
+body {
+    background-color: #F2F2F2; /* Fondo claro para buena visibilidad */
+    font-family: Arial, sans-serif;
+    color: #0D0D0D; /* Texto en color oscuro */
+}
+
+nav {
+    max-width: 100%;
+    height: 60px;
+    margin: auto;
+    background-color: #A61717; /* Rojo oscuro para el fondo del menú */
+    font-size: 18px;
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más sutil */
+    border-radius: 8px; /* Bordes redondeados */
+}
+
+#menuHorizontal {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+}
+
+#menuHorizontal > li {
+    position: relative; /* Necesario para posicionar el menú vertical */
+}
+
+#menuHorizontal > li > a {
+    text-decoration: none;
+    color: #F2F2F2; /* Blanco para contraste */
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+}
+
+#menuHorizontal > li > a:hover {
+    background-color: #BF815E; /* Color cálido para hover */
+    color: #FFFFFF; /* Cambia el color del texto al pasar el mouse */
+}
+
+#menuHorizontal li:hover .menuVertical {
+    display: block;
+}
+
+.menuVertical {
+    position: absolute;
+    top: 100%; /* Alinea el menú vertical debajo del horizontal */
+    left: 0;
+    display: none;
+    list-style: none;
+    background-color: #D91E1E; /* Rojo intenso para el fondo del menú desplegable */
+    width: 200px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más sutil */
+    z-index: 1000; /* Asegura que el menú desplegable esté por encima de otros elementos */
+}
+
+.menuVertical > li > a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #F2F2F2; /* Blanco */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+}
+
+.menuVertical > li > a:hover {
+    background-color: #BF815E; /* Color cálido para hover */
+    color: #FFFFFF; /* Cambia el color del texto al pasar el mouse */
+}
