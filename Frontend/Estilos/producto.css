@@ -1,0 +1,214 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Asegura que el padding y el border se incluyan en el ancho y alto total */
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F2F2F2;
+}
+
+h1, h3 {
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para la parte superior del header */
+header .top-header {
+    background-color: #0D0D0D;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header .top-header img {
+    height: 40px;
+}
+
+header .top-header input[type="text"] {
+    width: 80%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+header .top-header button {
+    background-color: #D91E1E;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+header .top-header a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+header .top-header .cart {
+    position: relative;
+}
+
+header .top-header .cart span {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #D91E1E;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 50%;
+}
+
+/* Estilo para la barra de navegación */
+nav {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+#menuHorizontal {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#menuHorizontal > li {
+    position: relative;
+    margin: 0 15px;
+}
+
+#menuHorizontal > li > a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.menuVertical {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menuVertical > li > a {
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+#menuHorizontal > li:hover .menuVertical {
+    display: block;
+}
+
+.producto {
+    background-color: #fff;
+    width: 250px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 20px;
+}
+
+.producto:hover {
+    transform: translateY(-5px);
+}
+
+.producto img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.producto .contenido {
+    padding: 15px;
+    text-align: center;
+}
+
+.producto h3 {
+    font-size: 18px;
+    color: #0D0D0D;
+}
+
+.producto p {
+    font-size: 16px;
+    color: #D91E1E;
+}
+
+.producto button {
+    padding: 10px;
+    background-color: #A61717;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.producto button:hover {
+    background-color: #C0392B;
+    transform: scale(1.1);
+}
+
+/* Estilos para el footer */
+footer {
+    background-color: #2c2c2c;
+    color: #fff;
+    padding: 20px 0;
+}
+
+footer div {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+footer h3, footer h4 {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer .contact-info {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+footer .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+    font-size: 14px;
+}
