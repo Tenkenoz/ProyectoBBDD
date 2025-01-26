@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Método de Pago</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./Estilos/pago.css">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 </head>
 <body>
     <header class="header">
         <div class="header-logo">
-            <h1><i class="fas fa-shopping-cart"></i> Confirmación Envio</h1>
+            <h1><i class="fas fa-shopping-cart"></i> Confirmación de Envío</h1>
         </div>
         <nav class="header-nav">
             <ul>
@@ -30,76 +29,106 @@
     </header>
 
     <main class="container">
-        <!-- Dirección de envío -->
         <section class="flex-container" id="shipping">
             <h2><i class="fas fa-map-marker-alt"></i> Dirección de Envío</h2>
-            <div class="content">
-                <p>Kevin Amaguaña Casa</p>
-                <p>Machachi</p>
-                <p>Barrio El Obelisco</p>
-                <p>Machachi, Mejia/Pichincha/Sierra 771110</p>
-            </div>
-            <button class="btn"><i class="fas fa-edit"></i> Cambiar</button>
-        </section>
-
-        <!-- Despacho aduanero -->
-        <section class="flex-container" id="customs">
-            <h2><i class="fas fa-box"></i> Despacho Aduanero</h2>
-            <p>Omitido</p>
-            <button class="btn"><i class="fas fa-edit"></i> Cambiar</button>
-        </section>
-
-        <!-- Método de pago -->
-        <section class="flex-container" id="payment">
-            <h2><i class="fas fa-credit-card"></i> Método de Pago</h2>
-            <div class="payment-options">
-                <div>
-                    <h3><i class="fas fa-wallet"></i> Mis tarjetas de crédito y débito</h3>
-                    <button class="btn"><i class="fas fa-plus"></i> Agregar una tarjeta</button>
-                </div>
-                <div>
-                    <h3><i class="fas fa-clock"></i> Planes de pago</h3>
-                    <p>Pay over time with Affirm</p>
-                    <p class="disabled">No elegible para este pedido.</p>
-                </div>
-                <div>
-                    <h3><i class="fas fa-gift"></i> Tu saldo disponible</h3>
-                    <label for="gift-code">Ingresa una tarjeta regalo, un vale o un código promocional:</label><br><br>
-                    <input type="text" id="gift-code" placeholder="Introducir código">
-                    <br><br>
-                    <button class="btn">Usar</button>
-                </div>
-                <div>
-                    <h3><i class="fas fa-money-check"></i> Otros métodos de pago</h3>
-                    <button class="btn">Más información sobre Amazon Store Card</button>
-                    <br><br>
-                    <button class="btn">Agregar una cuenta corriente</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ofertas -->
-        <section class="flex-container" id="offers">
-            <h2><i class="fas fa-tag"></i> Ofertas</h2>
-            <p>Aprovecha descuentos exclusivos con tu tarjeta Amazon Store Card.</p>
-            <button class="btn"><i class="fas fa-eye"></i> Ver ofertas</button>
+            <div class="content" id="shipping-address">Cargando dirección...</div>
         </section>
 
         <aside class="order-summary">
-            <h2>Confirmación del Pedido</h2>
-            <ul>
-                <li>Productos: <span>$14.99</span></li>
-                <li>Envío: <span>--</span></li>
-                <li>Total antes de impuestos: <span>--</span></li>
-                <li>Impuestos: <span>--</span></li>
-            </ul>
-            <h3>Total del pedido: <span>--</span></h3>
-            <button class="btn"><i class="fas fa-check"></i> Confirmar Pedido</button>
+            <h2>Resumen del Pedido</h2>
+            <ul id="order-summary-list"></ul>
+            <h3>Total: <span id="total-price">$0.00</span></h3>
+            <button class="btn" id="confirm-order">Confirmar Pedido</button>
         </aside>
     </main>
 
     <footer>
         <p>Derechos reservados &copy; 2025</p>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cartData = JSON.parse(localStorage.getItem('cartData')) || [];
+            const subtotal = parseFloat(localStorage.getItem('subtotal')) || 0;
+            const impuestos = parseFloat(localStorage.getItem('impuestos')) || 0;
+            const total = subtotal + impuestos;
+
+            // Rellenar la vista del carrito
+            if (cartData.length > 0) {
+                const orderSummary = document.getElementById('order-summary-list');
+                cartData.forEach(product => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `${product.Nombre}: <span>$${product.PrecioTotal.toFixed(2)}</span>`;
+                    orderSummary.appendChild(item);
+                });
+                document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+                document.getElementById('shipping-address').innerHTML = ` 
+                    <p>Kevin Amaguaña</p>
+                    <p>Barrio El Obelisco, Machachi</p>
+                    <p>Mejía, Pichincha, Ecuador</p>
+                `;
+            } else {
+                showToast('El carrito está vacío.', 'error');
+            }
+
+            // Función para manejar la confirmación del pedido
+            document.getElementById('confirm-order').addEventListener('click', function() {
+                if (cartData.length === 0) {
+                    showToast('Tu carrito está vacío. Agrega productos antes de confirmar.', 'error');
+                    return;
+                }
+
+                // Obtener la información del carrito
+                const carritoData = cartData.map(product => ({
+                    Id_Producto: product.Id_Producto,
+                    PrecioTotal: product.PrecioTotal
+                }));
+
+                // Preparar los datos a enviar
+                const data = {
+                    productos: carritoData,
+                    subtotal: subtotal,
+                    impuestos: impuestos,
+                    total: total
+                };
+
+                // Enviar los datos al backend para realizar la compra
+                fetch('http://localhost:5000/compra', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.mensaje) {
+                        showToast('Compra realizada con éxito', 'success');
+                        // Limpiar el carrito después de la compra
+                        localStorage.removeItem('cartData');
+                        localStorage.removeItem('subtotal');
+                        localStorage.removeItem('impuestos');
+                    } else {
+                        showToast('Error al realizar la compra: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Hubo un error al procesar la compra.', 'error');
+                });
+            });
+
+            // Función para mostrar notificaciones emergentes
+            function showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.classList.add('toast', type);
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html>

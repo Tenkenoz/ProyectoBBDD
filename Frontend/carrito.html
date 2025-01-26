@@ -28,16 +28,17 @@
     </header>
 
     <main>
-        <!-- Carrito -->
         <section class="cart">
             <h2>Carrito</h2>
-            <!-- Productos cargados dinámicamente -->
-        </section>
-
-        <!-- Artículos guardados -->
-        <section class="saved-items">
-            <h3>Tus artículos</h3>
-            <!-- Productos cargados dinámicamente -->
+            <div id="cart-items"></div>
+            <div class="cart-summary">
+                <h3 id="subtotal">Subtotal: US$0.00</h3>
+                <h4 id="total-items">Cantidad total: 0</h4>
+                <form action="pago.html" method="POST" id="checkout-form">
+                    <input type="hidden" id="cart-data" name="cart-data">
+                    <button type="submit">Proceder al pago</button>
+                </form>
+            </div>
         </section>
     </main>
 
@@ -46,76 +47,81 @@
     </footer>
 
     <script>
-        // URL del backend Flask
-        const API_URL = 'http://127.0.0.1:5000/productos';
+        const API_URL = 'http://127.0.0.1:5000/carrito';
 
-        // Función para cargar los productos
-        async function loadProducts() {
-            try {
-                const response = await fetch(API_URL);
-                const products = await response.json();
+        async function loadCart() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-                // Selección de secciones
-                const cartSection = document.querySelector('.cart');
-                const savedItemsSection = document.querySelector('.saved-items');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const subtotalElement = document.getElementById('subtotal');
+        const totalItemsElement = document.getElementById('total-items');
+        const cartDataInput = document.getElementById('cart-data');
 
-                // Limpiar contenido inicial
-                cartSection.innerHTML = '<h2>Carrito</h2>';
-                savedItemsSection.innerHTML = '<h3>Tus artículos</h3>';
+        let subtotal = 0;
+        let totalItems = 0;
 
-                let subtotal = 0;
+        cartItemsContainer.innerHTML = '';
 
-                products.forEach(product => {
-                    // Renderizar productos en el carrito
-                    const cartItem = `
-                        <div class="cart-item">
-                            <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 100px; height: auto;">
-                            <div class="item-details">
-                                <h3>${product.Nombre}</h3>
-                                <p>${product.Descripcion}</p>
-                                <p>Precio: <strong>US$${product.Precio.toFixed(2)}</strong></p>
-                            </div>
-                            <div class="item-actions">
-                                <button>-</button>
-                                <input type="text" value="1" style="width: 30px; text-align: center;">
-                                <button>+</button>
-                            </div>
-                        </div>
-                    `;
-                    cartSection.innerHTML += cartItem;
+        data.productos.forEach(product => {
+            subtotal += product.PrecioTotal;
+            totalItems += product.Cantidad;
 
-                    // Actualizar subtotal
-                    subtotal += product.Precio;
-
-                    // Renderizar productos en "Tus artículos"
-                    const savedItem = `
-                        <div class="saved-item">
-                            <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 80px;">
-                            <div>
-                                <p>${product.Nombre}</p>
-                                <p><strong>US$${product.Precio.toFixed(2)}</strong></p>
-                            </div>
-                        </div>
-                    `;
-                    savedItemsSection.innerHTML += savedItem;
-                });
-
-                // Mostrar subtotal
-                const subtotalElement = `
-                    <div class="subtotal">
-                        <h3>Subtotal (${products.length} productos): US$${subtotal.toFixed(2)}</h3>
-                        <button>Proceder al pago</button>
+            const cartItem = `
+                <div class="cart-item">
+                    <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 100px; height: auto;">
+                    <div class="item-details">
+                        <h3>${product.Nombre}</h3>
+                        <p>${product.Descripcion}</p>
+                        <p>Precio: <strong>US$${product.Precio.toFixed(2)}</strong></p>
                     </div>
-                `;
-                cartSection.innerHTML += subtotalElement;
+                    <div class="item-actions">
+                        <button onclick="updateQuantity('${product.Id_Producto}', -1)">-</button>
+                        <input type="text" value="${product.Cantidad}" readonly style="width: 30px; text-align: center;">
+                        <button onclick="updateQuantity('${product.Id_Producto}', 1)">+</button>
+                    </div>
+                </div>`;
+            cartItemsContainer.innerHTML += cartItem;
+        });
 
-            } catch (error) {
-                console.error('Error al cargar los productos:', error);
-            }
+        subtotalElement.innerHTML = `Subtotal: US$${subtotal.toFixed(2)}`;
+        totalItemsElement.innerHTML = `Cantidad total: ${totalItems}`;
+
+        // Guardar solo los productos en el campo oculto para enviarlos
+        cartDataInput.value = JSON.stringify(data.productos);
+
+        // Guardar los datos del carrito (solo los productos) en localStorage
+        localStorage.setItem('cartData', JSON.stringify(data.productos));
+
+        // Guardar el subtotal y total de productos para la siguiente página
+        localStorage.setItem('subtotal', subtotal.toFixed(2));
+        localStorage.setItem('totalItems', totalItems);
+    } catch (error) {
+        console.error('Error al cargar el carrito:', error);
+    }
+}
+
+async function updateQuantity(idProducto, change) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ Id_Producto: idProducto, Cantidad: change })
+        });
+
+        if (response.ok) {
+            loadCart();
+        } else {
+            console.error('Error al actualizar la cantidad del producto');
         }
+    } catch (error) {
+        console.error('Error al actualizar la cantidad del producto:', error);
+    }
+}
 
-        // Cargar los productos al cargar la página
-        window.onload = loadProducts;
+window.onload = loadCart;
+
     </script>
 </body>
 </html>
