@@ -1,3 +1,4 @@
+/* Estilo general */
 body {
     font-family: 'Open Sans', sans-serif;
     background-color: #F2F2F2;
@@ -7,14 +8,15 @@ body {
     line-height: 1.6;
 }
 
+/* Header */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background: linear-gradient(90deg,#A61717, #D91E1E);
+    background: linear-gradient(90deg, #A61717, #D91E1E);
     color: #FFF;
-    box-shadow: 0 4px 6px var(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .header-logo h1 {
@@ -202,4 +204,82 @@ input, select {
     border: 1px solid #DDD;
     border-radius: 5px;
     width: 90%;
+}
+
+/* Login */
+.login-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.login-button {
+    background-color: #FFD700;
+    color: #A61717;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-button:hover {
+    background-color: #FFC107;
+    transform: scale(1.05);
+}
+
+.login-dropdown {
+    position: absolute;
+    top: 110%; /* Justo debajo del botón */
+    right: 0;
+    background-color: #FFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 250px;
+    padding: 15px;
+    display: none; /* Oculto por defecto */
+    z-index: 1000;
+}
+
+.login-container:hover .login-dropdown {
+    display: block; /* Visible al pasar el mouse */
+}
+
+.login-dropdown input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.login-dropdown button {
+    background-color: #D91E1E;
+    color: #FFF;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.login-dropdown button:hover {
+    background-color: #A61717;
+}
+
+.create-account {
+    color: #D91E1E;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
 }
