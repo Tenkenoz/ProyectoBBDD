@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - Amazon</title>
+    <link rel="stylesheet" href="./Estilos/estilos.css">
+</head>
+<body>
+
+    <!-- Container for the Registration Form -->
+    <div class="register-container">
+        <div class="register-form">
+            <!-- Logo -->
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon Logo" class="amazon-logo">
+            </div>
+
+            <h2 class="register-title">Crear cuenta</h2>
+
+            <!-- Registration Form -->
+            <form id="registerForm">
+                <!-- Nombre completo -->
+                <label for="fullName">Tu nombre</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Nombres y apellidos" required>
+
+                <!-- Número de teléfono o correo electrónico -->
+                <label for="emailOrPhone">Número de teléfono móvil o correo electrónico</label>
+                <input type="text" id="emailOrPhone" name="emailOrPhone" placeholder="Ejemplo: ejemplo@dominio.com" required>
+
+                <!-- Contraseña -->
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required>
+
+                <!-- Confirmar contraseña -->
+                <label for="confirmPassword">Vuelve a escribir la contraseña</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirma tu contraseña" required>
+
+                <!-- Botón continuar -->
+                <button type="submit" class="continue-btn">Continuar</button>
+            </form>
+
+            <!-- Términos y condiciones -->
+            <p class="terms">
+                Al crear una cuenta, aceptas las <a href="#">Condiciones de Uso</a> y el <a href="#">Aviso de Privacidad</a> de amazon.com.
+            </p>
+
+            <!-- Cuenta corporativa -->
+            <div class="corporate-account">
+                <p>¿Compras para el trabajo?</p>
+                <a href="#">Crea una cuenta corporativa gratis</a>
+            </div>
+
+            <!-- Enlace para usuarios con cuenta -->
+            <div class="already-have-account">
+                <p>¿Ya tienes una cuenta?</p>
+                <a href="#">Iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
