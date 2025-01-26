@@ -3,334 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Tienda Online</title>
     <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #F2F2F2;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #0D0D0D;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header img {
-            height: 40px;
-        }
-
-        header input {
-            width: 80%;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-        }
-
-        header button {
-            background-color: #D91E1E;
-            color: #fff;
-            border: none;
-            padding: 8px 15px;
-            margin-left: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: #1C1C1C;
-            display: flex;
-            justify-content: center;
-        }
-
-        nav ul li {
-            position: relative;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            display: block;
-        }
-
-        nav ul li:hover .menuVertical {
-            display: block;
-        }
-
-        .menuVertical {
-            display: none;
-            position: absolute;
-            background-color: #1C1C1C;
-            top: 100%;
-            left: 0;
-            min-width: 150px;
-            z-index: 1000;
-        }
-
-        .menuVertical li a {
-            padding: 10px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #0D0D0D;
-        }
-
-        h2 {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #0D0D0D;
-        }
-
-        #contenedor-productos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .producto {
-            background-color: #fff;
-            width: 250px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .producto img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            background-color: #f9f9f9;
-            padding: 10px;
-        }
-
-        .producto div {
-            padding: 15px;
-        }
-
-        .producto h3 {
-            font-size: 18px;
-            color: #0D0D0D;
-            margin: 0;
-        }
-
-        .producto p {
-            font-size: 16px;
-            color: #D91E1E;
-            margin: 10px 0;
-        }
-
-        .producto button {
-            padding: 10px;
-            background-color: #A61717;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .info-adicional {
-            display: none;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-top: 1px solid #ddd;
-        }
-
-        .info-adicional p {
-            margin: 5px 0;
-            color: #333;
-        }
-
-        footer {
-            background-color: #2c2c2c;
-            color: #fff;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        footer a {
-            color: #fff;
-            text-decoration: none;
-        }
+        body { font-family: Arial, sans-serif; background-color: #F2F2F2; color: #333; margin: 0; padding: 0; }
+        header { background-color: #0D0D0D; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; }
+        h1 { text-align: center; color: #0D0D0D; }
+        #contenedor-productos { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px; }
+        .producto { background-color: #fff; width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; }
+        .producto img { width: 100%; height: 200px; object-fit: contain; }
+        .producto button { background-color: #A61717; color: #fff; border: none; padding: 10px; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
     <header>
-        <div>
-            <img src="https://via.placeholder.com/120x40?text=Logo" alt="Logo">
-        </div>
-        <div>
-            <input type="text" placeholder="Buscar productos">
-            <button>Buscar</button>
-        </div>
-        <div>
-            <a href="#">Hola, Usuario</a>
-            <a href="#">Pedidos</a>
-            <a href="#">Cuenta</a>
-            <div>
-                <a href="#">
-                    <img src="https://via.placeholder.com/24?text=🛒" alt="Carrito">
-                    <span id="carrito-count">0</span>
-                </a>
-            </div>
-        </div>
+        <h1>Tienda Online</h1>
     </header>
-
-    <nav>
-        <ul id="menuHorizontal">
-            <li>
-                <a href="#categorias">Categorías</a>
-                <ul class="menuVertical">
-                    <li><a href="#electronica">Electrónica</a></li>
-                    <li><a href="#libros">Libros</a></li>
-                    <li><a href="#hogar">Hogar y Cocina</a></li>
-                    <li><a href="#deportes">Deportes y Aire Libre</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">Ofertas de la Semana</a>
-                <ul class="menuVertical">
-                    <li><a href="#">Descuento 2%</a></li>
-                    <li><a href="#">Descuento 5%</a></li>
-                    <li><a href="#">Descuento 10%</a></li>
-                    <li><a href="#">Descuento 15%</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="index.html">Acerca de Nosotros</a>
-                <ul class="menuVertical">
-                    <li><a href="#">Servicios</a></li>
-                    <li><a href="#">Conócenos</a></li>
-                    <li><a href="#">Soporte al Cliente</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <h1>Nuestros Productos</h1>
-
-    <div id="categorias">
-        <h2 id="electronica">Electrónica</h2>
-        <div id="contenedor-electronica" class="contenedor-productos"></div>
-
-        <h2 id="libros">Libros</h2>
-        <div id="contenedor-libros" class="contenedor-productos"></div>
-
-        <h2 id="hogar">Hogar y Cocina</h2>
-        <div id="contenedor-hogar" class="contenedor-productos"></div>
-
-        <h2 id="deportes">Deportes y Aire Libre</h2>
-        <div id="contenedor-deportes" class="contenedor-productos"></div>
-    </div>
-
-    <footer>
-        <p>© 2025 Amazon. Todos los derechos reservados. | <a href="/privacy-policy">Política de privacidad</a> | <a href="/terms">Términos y condiciones</a></p>
-    </footer>
+    <div id="contenedor-productos"></div>
 
     <script>
-        let carrito = [];
-
         async function cargarProductos() {
             try {
                 const response = await fetch('http://localhost:5000/productos');
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error('Error al obtener productos');
                 const productos = await response.json();
-                console.log("Datos recibidos:", productos);
+                const contenedor = document.getElementById("contenedor-productos");
 
-                const contenedores = {
-                    "Electrónica": document.getElementById("contenedor-electronica"),
-                    "Libros": document.getElementById("contenedor-libros"),
-                    "Hogar y Cocina": document.getElementById("contenedor-hogar"),
-                    "Deportes y Aire Libre": document.getElementById("contenedor-deportes")
-                };
-
-                productos.forEach((producto) => {
-                    const precio = producto.Precio?.$numberDouble || producto.Precio || 'N/A';
+                productos.forEach(producto => {
                     const productoHTML = `
                         <div class="producto">
-                            <img src="${producto.Imagen || 'https://via.placeholder.com/200x200?text=Imagen+no+disponible'}" alt="${producto.NombreProducto}">
-                            <div>
-                                <h3>${producto.NombreProducto}</h3>
-                                <p>$${precio}</p>
-                                <button onclick="mostrarDetalles('${producto.productolD}', this)">Mostrar más información</button>
-                                <button onclick="agregarAlCarrito('${producto.productolD}')">Agregar al carrito</button>
-                                <div class="info-adicional" id="info-${producto.productolD}"></div>
-                            </div>
+                            <img src="${producto.Imagen || 'https://via.placeholder.com/200'}" alt="${producto.Nombre}">
+                            <h3>${producto.Nombre}</h3>
+                            <p>Precio: $${producto.Precio}</p>
+                            <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
+                            <button onclick="verDetalles('${producto.Id_Producto}', '${producto.Nombre}', '${producto.Imagen}', '${producto.Precio}', '${producto.Descripcion}')">Información del Producto</button>
                         </div>
                     `;
-                    contenedores[producto.Categoria].innerHTML += productoHTML;
+                    contenedor.innerHTML += productoHTML;
                 });
             } catch (error) {
-                console.error('Error al cargar los productos:', error);
+                console.error(error);
             }
         }
 
-        function mostrarDetalles(productolD, boton) {
-            const infoAdicional = document.getElementById(`info-${productolD}`);
-
-            // Si ya está visible, ocultamos la información
-            if (infoAdicional.style.display === 'block') {
-                infoAdicional.style.display = 'none';
-                boton.textContent = 'Mostrar más información';
-                return;
-            }
-
-            // Si no está visible, cargamos los detalles
-            fetch(`http://localhost:5000/productos/${productolD}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Producto no encontrado');
-                    }
-                    return response.json();
-                })
-                .then(producto => {
-                    infoAdicional.innerHTML = `
-                        <p><strong>Descripción:</strong> ${producto.Descripcion}</p>
-                        <p><strong>Características:</strong> ${producto.Caracteristicas}</p>
-                        <p><strong>Stock:</strong> ${producto.Stock?.$numberInt || producto.Stock || 'N/A'}</p>
-                        <p><strong>Descuento:</strong> ${producto.Descuento?.$numberDouble || producto.Descuento || 'N/A'}%</p>
-                    `;
-                    infoAdicional.style.display = 'block';
-                    boton.textContent = 'Ocultar información';
-                })
-                .catch(error => {
-                    console.error('Error al cargar los detalles del producto:', error);
-                    infoAdicional.innerHTML = `<p>Error: ${error.message}</p>`;
-                    infoAdicional.style.display = 'block';
-                });
-        }
-
-        function agregarAlCarrito(productolD) {
-            fetch(`http://localhost:5000/productos/${productolD}`)
-                .then(response => response.json())
-                .then(producto => {
-                    carrito.push(producto);
-                    actualizarCarrito();
-                })
-                .catch(error => console.error('Error al agregar al carrito:', error));
-        }
-
-        function actualizarCarrito() {
-            const carritoCount = document.getElementById('carrito-count');
-            carritoCount.textContent = carrito.length;
+        function verDetalles(id, nombre, imagen, precio, descripcion) {
+            const productData = { id, title: nombre, image: imagen, price: precio, description: descripcion };
+            localStorage.setItem("selectedProduct", JSON.stringify(productData));
+            window.location.href = "index.html";
         }
 
         window.onload = cargarProductos;

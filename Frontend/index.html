@@ -28,109 +28,42 @@
     <div class="container">
         <!-- Image Section -->
         <div class="image-section">
-            <!-- Imagen principal -->
-            <img src="./imagenes/descarga.jpg" alt="Laptop Image" id="productImage" class="main-image">
-            
-            <!-- Miniaturas -->
-            <div class="thumbnail-gallery">
-                <img src="./descarga.jpg" alt="Thumbnail 1" class="thumbnail" onclick="changeImage('./descarga.jpg')">
-                <img src="./imagen2.jpg" alt="Thumbnail 2" class="thumbnail" onclick="changeImage('./imagen2.jpg')">
-                <img src="./imagen3.jpg" alt="Thumbnail 3" class="thumbnail" onclick="changeImage('./imagen3.jpg')">
-            </div>
+            <img src="" alt="Product Image" id="productImage" class="main-image">
         </div>
 
         <!-- Details Section -->
         <div class="details-section">
-            <h1>ASUS Zenbook Duo portátil, pantalla táctil OLED 3K 120Hz dual de 14 pulgadas, certificado Intel Evo, CPU Intel Core Ultra 9 185H, gráficos Intel Arc, 32 GB de RAM, SSD de 1 TB, Windows 11, gris</h1>
-            <p class="store">Visita la tienda de <a href="#">ASUS</a></p>
+            <h1 id="productTitle"></h1>
+            <p class="store">Visita la tienda de <a href="#" id="productStore"></a></p>
             <div class="rating">
-                <span>4.2</span>
-                <span>⭐⭐⭐⭐☆</span>
-                <span>| 217 calificaciones</span>
+                <span id="productRating"></span>
+                <span id="productStars"></span>
+                <span id="productReviews"></span>
             </div>
             <p class="price">
-                <span class="current-price">US$1,499.00</span>
-                <span class="discount">-12%</span>
-                <span class="old-price">US$1,699.99</span>
+                <span class="current-price" id="productPrice"></span>
+                <span class="discount" id="productDiscount"></span>
+                <span class="old-price" id="productOldPrice"></span>
             </p>
-            <p><strong>US$203.83 de cargos de importación</strong> y envío <strong>gratis</strong> a Ecuador <a href="#">Detalles</a></p>
-            <p class="delivery-info">
-                <strong>Entrega GRATIS</strong> el <strong>lunes, 3 de febrero</strong> a Ecuador. Realiza el pedido en <strong>8 hrs</strong>.
-            </p>
-            <div class="availability">
-                <span class="available">Disponible</span>
-            </div>
-            <div class="specs">
-                <h3>Especificaciones:</h3>
-                <ul>
-                    <li>CPU: Intel Core Ultra 9</li>
-                    <li>Pantalla: OLED táctil de 14 pulgadas</li>
-                    <li>RAM: 32 GB</li>
-                    <li>Almacenamiento: SSD de 1 TB</li>
-                    <li>Sistema operativo: Windows 11</li>
-                    <li>Gráficos: Intel Arc</li>
-                </ul>
-            </div>
-            <p><strong>Sobre este artículo:</strong></p>
-            <p>
-                Versatilidad multipantalla: encuentra el modo que mejor se adapte a tu tarea y cambia sin problemas entre ellos. 
-                Portabilidad integrada con un diseño ultraligero. Productividad potente gracias al procesador Intel Core Ultra 9-185H y almacenamiento SSD de 1 TB.
-            </p>
-        </div>
-        
-
-        <!-- Payment Section -->
-        <div class="payment-section">
-            <h3>Opciones de Compra</h3>
-            <p class="price">US$ 1,499.00</p>
-            <p><strong>US$ 203.83</strong> de cargos de importación y envío gratis a Ecuador. <a href="#">Detalles</a></p>
-            <p class="delivery-info">
-                <strong>Entrega GRATIS:</strong> el lunes, 3 de febrero a Ecuador. <br>
-                <span class="order-time">Realiza el pedido en <span id="time-left">8 hrs</span></span>
-            </p>
-            <p><strong>Enviar a:</strong> Alexander - Sangolquí 171102</p>
-            <p><strong>Estado:</strong> <span class="availability">Disponible</span></p>
-        
-            <div class="buttons">
-                <button class="cart-btn">Agregar al Carrito</button>
-                <button class="buy-now-btn">Comprar Ahora</button>
-            </div>
-        
-            <hr>
-        
-            <p><strong>Enviado por:</strong> Amazon.com</p>
-            <p><strong>Vendido por:</strong> Amazon.com</p>
-            <p><strong>Devoluciones:</strong> Reintegro o reemplazo en 30 días</p>
-            <p><strong>Pago:</strong> Transacción segura</p>
-            <p><strong>Servicio al cliente:</strong> Amazon.com</p>
-            <p><strong>Soporte:</strong> Soporte de producto incluido</p>
-            <a href="#" class="see-less">Ver menos</a>
+            <p id="productDescription"></p>
         </div>
     </div>
 
     <script>
-        const productImage = document.getElementById('productImage');
-        const zoomedImage = document.createElement('img');
-        zoomedImage.src = "/imagenes/descarga.jpg";
-        zoomedImage.className = "zoomed-image";
-        document.body.appendChild(zoomedImage);
-
-        productImage.addEventListener('mouseover', () => {
-            zoomedImage.style.display = 'block';
-        });
-
-        productImage.addEventListener('mousemove', (e) => {
-            const rect = productImage.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            zoomedImage. style.left = `${e.pageX + 10}px`;
-            zoomedImage.style.top = `${e.pageY - 300}px`;
-            zoomedImage.style.transformOrigin = `${x / rect.width * 100}% ${y / rect.height * 100}%`;
-        });
-
-        productImage.addEventListener('mouseout', () => {
-            zoomedImage.style.display = 'none';
+        document.addEventListener("DOMContentLoaded", function() {
+            const productData = JSON.parse(localStorage.getItem("selectedProduct"));
+            if (productData) {
+                document.getElementById("productImage").src = productData.image;
+                document.getElementById("productTitle").textContent = productData.title;
+                document.getElementById("productStore").textContent = productData.store;
+                document.getElementById("productRating").textContent = productData.rating;
+                document.getElementById("productStars").textContent = productData.stars;
+                document.getElementById("productReviews").textContent = productData.reviews;
+                document.getElementById("productPrice").textContent = productData.price;
+                document.getElementById("productDiscount").textContent = productData.discount;
+                document.getElementById("productOldPrice").textContent = productData.oldPrice;
+                document.getElementById("productDescription").textContent = productData.description;
+            }
         });
     </script>
 </body>

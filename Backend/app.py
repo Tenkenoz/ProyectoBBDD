@@ -127,34 +127,42 @@ def add_to_carrito():
 
 
 @app.route('/compra', methods=['POST'])
-def realizar_compra():
+def confirmar_compra():
     try:
-        # Obtener los datos del carrito enviados desde el frontend
-        data = request.get_json()
+        data = request.json
 
-        # Procesar la información de la compra (aquí iría el manejo de base de datos, etc.)
+        # Validación de datos recibidos
+        if not data:
+            return jsonify({'error': 'No se enviaron datos'}), 400
+
+        if not all(key in data for key in ['productos', 'subtotal', 'impuestos', 'total']):
+            return jsonify({'error': 'Faltan datos en la solicitud'}), 400
+
         productos = data['productos']
         subtotal = data['subtotal']
         impuestos = data['impuestos']
         total = data['total']
 
-        # Aquí se podría realizar alguna lógica adicional, como guardar la compra en la base de datos
+        # Validar estructura de productos
+        if not isinstance(productos, list) or not all('Id_Producto' in p and 'PrecioTotal' in p for p in productos):
+            return jsonify({'error': 'La lista de productos tiene un formato inválido'}), 400
 
-        # Retornar una respuesta de éxito
-        return jsonify({
-            'mensaje': 'Compra realizada con éxito',
-            'compra': {
-                'productos': productos,
-                'subtotal': subtotal,
-                'impuestos': impuestos,
-                'total': total
-            }
-        }), 201  # Código de éxito HTTP para creación
+        # Crear el documento para guardar en la base de datos
+        compra = {
+            "productos": productos,
+            "subtotal": subtotal,
+            "impuestos": impuestos,
+            "total": total,
+            "fecha": datetime.now()
+        }
+
+        # Insertar la compra en la colección
+        compra_collection.insert_one(compra)
+
+        return jsonify({"mensaje": "Compra realizada con éxito"}), 200
 
     except Exception as e:
-        # En caso de error, retornar un mensaje de error
-        return jsonify({'error': str(e)}), 500  # Código de error interno del servidor
-
+        return jsonify({"error": f"Ocurrió un error: {str(e)}"}), 500
 
 @app.route('/tarjeta', methods=['POST'])
 def add_tarjeta():
