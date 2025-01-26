@@ -215,7 +215,7 @@ footer {
 
 .login-dropdown {
     position: absolute;
-    top: 110%; /* Justo debajo del botón */
+    top: 70%; /* Justo debajo del botón */
     right: 0;
     background-color: #FFF;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
