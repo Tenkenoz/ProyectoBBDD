@@ -5,21 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Online</title>
     <link rel="stylesheet" href="Estilos/producto.css">
+    <style>
+        .contenedor-productos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .producto {
+            background-color: #fff;
+            width: 250px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .producto img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+        .producto div {
+            padding: 15px;
+        }
+        .producto h3 {
+            font-size: 18px;
+            color: #232f3e;
+            margin: 0;
+        }
+        .producto p {
+            font-size: 16px;
+            color: #ff9900;
+            margin: 10px 0;
+        }
+        .producto button {
+            padding: 10px;
+            background-color: #ff9900;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div>
-            <!-- Logo de Amazon -->
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Logo de Amazon" style="height: 40px;">
         </div>
         <div>
-            <input type="text" placeholder="Buscar productos">
-            <button>Buscar</button>
+            <input type="text" id="search-input" placeholder="Buscar productos">
+            <button onclick="buscarProductos()">Buscar</button>
         </div>
         <div>
-            <!-- Enlace "Anónimo" -->
             <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Anónimo</a>
-            <!-- Botón del carrito -->
             <a href="#" style="background-color: #ff9900; color: #fff; padding: 8px 15px; border-radius: 5px; text-decoration: none; display: flex; align-items: center;">
                 <img src="https://via.placeholder.com/24?text=🛒" alt="Carrito" style="margin-right: 5px;">
                 <span id="carrito-count">0</span>
@@ -27,145 +72,68 @@
         </div>
     </header>
 
-    <nav>
-        <ul id="menuHorizontal">
-            <li>
-                <a href="#categorias">Categorías</a>
-                <ul class="menuVertical">
-                    <li><a href="#electronica">Electrónica</a></li>
-                    <li><a href="#libros">Libros</a></li>
-                    <li><a href="#hogar">Hogar y Cocina</a></li>
-                    <li><a href="#deportes">Deportes y Aire Libre</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">Ofertas de la Semana</a>
-                <ul class="menuVertical">
-                    <li><a href="#">Descuento 2%</a></li>
-                    <li><a href="#">Descuento 5%</a></li>
-                    <li><a href="#">Descuento 10%</a></li>
-                    <li><a href="#">Descuento 15%</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="index.html">Acerca de Nosotros</a>
-                <ul class="menuVertical">
-                    <li><a href="#">Servicios</a></li>
-                    <li><a href="#">Conócenos</a></li>
-                    <li><a href="#">Soporte al Cliente</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
     <h1>Nuestros Productos</h1>
 
     <div id="categorias">
-        <h2 id="electronica">Electrónica</h2>
-        <div id="contenedor-electronica" class="contenedor-productos"></div>
-
-        <h2 id="libros">Libros</h2>
-        <div id="contenedor-libros" class="contenedor-productos"></div>
-
-        <h2 id="hogar">Hogar y Cocina</h2>
-        <div id="contenedor-hogar" class="contenedor-productos"></div>
-
-        <h2 id="deportes">Deportes y Aire Libre</h2>
-        <div id="contenedor-deportes" class="contenedor-productos"></div>
+        <!-- Las categorías se crearán dinámicamente aquí -->
     </div>
 
     <footer>
-        <p>© 2025 Tienda Online. Todos los derechos reservados. | <a href="/privacy-policy">Política de privacidad</a> | <a href="/terms">Términos y condiciones</a></p>
+        <p>© 2025 Tienda Online. Todos los derechos reservados.</p>
     </footer>
 
     <script>
-        let carrito = [];
-
         async function cargarProductos() {
             try {
                 const response = await fetch('http://localhost:5000/productos');
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
                 const productos = await response.json();
-                console.log("Datos recibidos:", productos);
 
-                const contenedores = {
-                    "Electrónica": document.getElementById("contenedor-electronica"),
-                    "Libros": document.getElementById("contenedor-libros"),
-                    "Hogar y Cocina": document.getElementById("contenedor-hogar"),
-                    "Deportes y Aire Libre": document.getElementById("contenedor-deportes")
-                };
+                const categoriasContainer = document.getElementById("categorias");
+                const productosPorCategoria = {};
 
                 productos.forEach((producto) => {
-                    const precio = producto.Precio?.$numberDouble || producto.Precio || 'N/A';
-                    const productoHTML = `
-                        <div class="producto">
-                            <img src="${producto.Imagen || 'https://via.placeholder.com/200x200?text=Imagen+no+disponible'}" alt="${producto.NombreProducto}">
-                            <div>
-                                <h3>${producto.NombreProducto}</h3>
-                                <p>$${precio}</p>
-                                <button onclick="mostrarDetalles('${producto.Id_Producto}', this)">Mostrar más información</button>
-                                <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
-                                <div class="info-adicional" id="info-${producto.Id_Producto}"></div>
-                            </div>
-                        </div>
-                    `;
-                    contenedores[producto.Categoria].innerHTML += productoHTML;
+                    const categoria = producto.Categoria || "Sin categoría";
+                    if (!productosPorCategoria[categoria]) {
+                        productosPorCategoria[categoria] = [];
+                    }
+                    productosPorCategoria[categoria].push(producto);
                 });
+
+                for (const categoria in productosPorCategoria) {
+                    const tituloCategoria = document.createElement("h2");
+                    tituloCategoria.textContent = categoria;
+                    categoriasContainer.appendChild(tituloCategoria);
+
+                    const contenedorProductos = document.createElement("div");
+                    contenedorProductos.className = "contenedor-productos";
+                    categoriasContainer.appendChild(contenedorProductos);
+
+                    productosPorCategoria[categoria].forEach((producto) => {
+                        const precio = producto.Precio || 'N/A';
+                        const rating = producto.Rating || 'N/A';
+                        const productoHTML = `
+                            <div class="producto">
+                                <img src="${producto.Imagen}" alt="${producto.Nombre}">
+                                <div>
+                                    <h3>${producto.Nombre}</h3>
+                                    <p>Precio: $${precio}</p>
+                                    <p>Rating: ${rating} ⭐</p>
+                                    <button onclick="irADetalles('${producto.Id_Producto}')">Mostrar más información</button>
+                                    <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
+                                </div>
+                            </div>
+                        `;
+                        contenedorProductos.innerHTML += productoHTML;
+                    });
+                }
             } catch (error) {
                 console.error('Error al cargar los productos:', error);
             }
         }
 
-        function mostrarDetalles(idProducto, boton) {
-            const infoAdicional = document.getElementById(`info-${idProducto}`);
-
-            // Si ya está visible, ocultamos la información
-            if (infoAdicional.style.display === 'block') {
-                infoAdicional.style.display = 'none';
-                boton.textContent = 'Mostrar más información';
-                return;
-            }
-
-            // Si no está visible, cargamos los detalles
-            fetch(`http://localhost:5000/productos/${idProducto}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Producto no encontrado');
-                    }
-                    return response.json();
-                })
-                .then(producto => {
-                    infoAdicional.innerHTML = `
-                        <p><strong>Descripción:</strong> ${producto.Descripcion}</p>
-                        <p><strong>Características:</strong> ${producto.Caracteristicas}</p>
-                        <p><strong>Stock:</strong> ${producto.Stock?.$numberInt || producto.Stock || 'N/A'}</p>
-                        <p><strong>Descuento:</strong> ${producto.Descuento?.$numberDouble || producto.Descuento || 'N/A'}%</p>
-                    `;
-                    infoAdicional.style.display = 'block';
-                    boton.textContent = 'Ocultar información';
-                })
-                .catch(error => {
-                    console.error('Error al cargar los detalles del producto:', error);
-                    infoAdicional.innerHTML = `<p>Error: ${error.message}</p>`;
-                    infoAdicional.style.display = 'block';
-                });
-        }
-
-        function agregarAlCarrito(idProducto) {
-            fetch(`http://localhost:5000/productos/${idProducto}`)
-                .then(response => response.json())
-                .then(producto => {
-                    carrito.push(producto);
-                    actualizarCarrito();
-                })
-                .catch(error => console.error('Error al agregar al carrito:', error));
-        }
-
-        function actualizarCarrito() {
-            const carritoCount = document.getElementById('carrito-count');
-            carritoCount.textContent = carrito.length;
+        function irADetalles(idProducto) {
+            window.location.href = `detalles_producto.html?id=${idProducto}`;
         }
 
         window.onload = cargarProductos;
