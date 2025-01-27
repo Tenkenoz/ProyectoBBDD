@@ -1,2 +1,4 @@
-pip install flask pymongo dnspython flask_cors
+pip install flask pymongo dnspython flask_cors pymongo werkzeug
+
+
 python -m flask run
