@@ -19,10 +19,14 @@
             <h2 class="register-title">Crear cuenta</h2>
 
             <!-- Registration Form -->
-            <form id="registerForm">
+            <form id="registerForm" onsubmit="submitForm(event)">
                 <!-- Nombre completo -->
                 <label for="fullName">Tu nombre</label>
                 <input type="text" id="fullName" name="fullName" placeholder="Nombres y apellidos" required>
+
+                <!-- Edad -->
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" name="edad" placeholder="Edad" required>
 
                 <!-- Número de teléfono o correo electrónico -->
                 <label for="emailOrPhone">Número de teléfono móvil o correo electrónico</label>
@@ -59,6 +63,59 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Función para manejar el envío del formulario
+        async function submitForm(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
+
+            // Obtener los valores del formulario
+            const nombre = document.getElementById('fullName').value;
+            const edad = document.getElementById('edad').value;
+            const correo = document.getElementById('emailOrPhone').value;
+            const telefono = document.getElementById('emailOrPhone').value;  // Usaremos el mismo campo para teléfono
+            const contraseña = document.getElementById('password').value;
+            const confirmContraseña = document.getElementById('confirmPassword').value;
+
+            // Validar que las contraseñas coincidan
+            if (contraseña !== confirmContraseña) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+
+            // Crear el objeto con los datos del cliente
+            const clienteData = {
+                Nombre: nombre,
+                Edad: edad,
+                Correo: correo,
+                Telefono: telefono,
+                Contraseña: contraseña
+            };
+
+            try {
+                // Enviar los datos al backend usando Fetch API
+                const response = await fetch('http://localhost:5000/cliente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(clienteData)
+                });
+
+                const result = await response.json();
+
+                // Manejar la respuesta del servidor
+                if (response.ok) {
+                    alert("Cliente registrado con éxito");
+                    window.location.href = "login.html";  // Redirigir al login (por ejemplo)
+                } else {
+                    alert(result.error || "Hubo un error al registrar el cliente");
+                }
+            } catch (error) {
+                alert("Error en la conexión con el servidor");
+                console.error("Error:", error);
+            }
+        }
+    </script>
+
 </body>
 </html>

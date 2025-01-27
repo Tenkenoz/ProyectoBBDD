@@ -23,8 +23,9 @@
         </nav>
         <div class="login-container">
             <div class="login-button">
-                Anonimo<i class="fas fa-user"></i> 
+                Anónimo <i class="fas fa-user"></i>
             </div>  
+        </div>
     </header>
 
     <main>
@@ -47,81 +48,64 @@
     </footer>
 
     <script>
-        const API_URL = 'http://127.0.0.1:5000/carrito';
+        window.onload = function() {
+            const cliente = JSON.parse(localStorage.getItem('cliente'));
+            const loginButton = document.querySelector('.login-button');
 
-async function loadCart() {
-try {
-const response = await fetch(API_URL);
-const data = await response.json();
+            if (cliente) {
+                loginButton.innerHTML = `Hola, ${cliente.Nombre} <i class="fas fa-user"></i>`;
 
-const cartItemsContainer = document.getElementById('cart-items');
-const subtotalElement = document.getElementById('subtotal');
-const totalItemsElement = document.getElementById('total-items');
-const cartDataInput = document.getElementById('cart-data');
+                // Cargar el carrito desde el backend
+                fetch(`/carrito/${cliente._id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se pudo cargar el carrito');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.productos && data.productos.length > 0) {
+                            cargarCarrito(data.productos);
+                        } else {
+                            document.getElementById('cart-items').innerHTML = '<p>No tienes productos en tu carrito.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar el carrito:', error);
+                    });
+            } else {
+                loginButton.innerHTML = `Anónimo <i class="fas fa-user"></i>`;
+                document.getElementById('cart-items').innerHTML = '<p>No hay cliente autenticado.</p>';
+            }
+        };
 
-let subtotal = 0;
-let totalItems = 0;
+        function cargarCarrito(productos) {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const subtotalElement = document.getElementById('subtotal');
+            const totalItemsElement = document.getElementById('total-items');
+            let subtotal = 0;
+            let cantidadTotal = 0;
 
-cartItemsContainer.innerHTML = '';
+            cartItemsDiv.innerHTML = '';
 
-data.productos.forEach(product => {
-    subtotal += product.PrecioTotal;
-    totalItems += product.Cantidad;
+            productos.forEach(producto => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
 
-    const cartItem = `
-        <div class="cart-item">
-            <img src="${product.Imagen || 'default.jpg'}" alt="${product.Nombre}" style="width: 100px; height: auto;">
-            <div class="item-details">
-                <h3>${product.Nombre}</h3>
-                <p>${product.Descripcion}</p>
-                <p>Precio: <strong>US$${product.Precio.toFixed(2)}</strong></p>
-            </div>
-            <div class="item-actions">
-                <button onclick="updateQuantity('${product.Id_Producto}', -1)">-</button>
-                <input type="text" value="${product.Cantidad}" readonly style="width: 30px; text-align: center;">
-                <button onclick="updateQuantity('${product.Id_Producto}', 1)">+</button>
-            </div>
-        </div>`;
-    cartItemsContainer.innerHTML += cartItem;
-});
+                itemDiv.innerHTML = `
+                    <p>${producto.Nombre}</p>
+                    <p>Precio: US$${producto.PrecioTotal.toFixed(2)}</p>
+                `;
 
-subtotalElement.innerHTML = `Subtotal: US$${subtotal.toFixed(2)}`;
-totalItemsElement.innerHTML = `Cantidad total: ${totalItems}`;
+                subtotal += producto.PrecioTotal;
+                cantidadTotal++;
 
-// Guardar solo los productos en el campo oculto para enviarlos
-cartDataInput.value = JSON.stringify(data.productos);
+                cartItemsDiv.appendChild(itemDiv);
+            });
 
-// Guardar los datos del carrito (solo los productos) en localStorage
-localStorage.setItem('cartData', JSON.stringify(data.productos));
-
-// Guardar el subtotal y total de productos para la siguiente página
-localStorage.setItem('subtotal', subtotal.toFixed(2));
-localStorage.setItem('totalItems', totalItems);
-} catch (error) {
-console.error('Error al cargar el carrito:', error);
-}
-}
-
-async function updateQuantity(idProducto, change) {
-try {
-const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ Id_Producto: idProducto, Cantidad: change })
-});
-
-if (response.ok) {
-    loadCart();
-} else {
-    console.error('Error al actualizar la cantidad del producto');
-}
-} catch (error) {
-console.error('Error al actualizar la cantidad del producto:', error);
-}
-}
-
-window.onload = loadCart;
-
+            subtotalElement.textContent = `Subtotal: US$${subtotal.toFixed(2)}`;
+            totalItemsElement.textContent = `Cantidad total: ${cantidadTotal}`;
+        }
     </script>
 </body>
 </html>

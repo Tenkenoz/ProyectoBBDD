@@ -11,18 +11,18 @@
         <div class="header-logo">
             <h1><i class="fas fa-shopping-cart"></i> Detalles Producto </h1>
         </div>
-        <div class="login-container">
-            <div class="login-button">
-                <i class="fas fa-user"></i> Login
-            </div>
+        <div id="login-container" class="login-container">
+            <!-- Si no hay usuario logueado, mostrar los campos de login -->
+            <div class="login-button" onclick="toggleLogin()">Iniciar sesión</div>
             <div class="login-dropdown">
-                <input type="text" placeholder="Usuario" />
-                <input type="password" placeholder="Contraseña" />
-                <button>Acceder</button>
+                <input type="text" id="correo" placeholder="Correo" />
+                <input type="password" id="contraseña" placeholder="Contraseña" />
+                <button onclick="iniciarSesion()">Acceder</button>
                 <p class="create-account">
                     <a href="login.html">Crear cuenta</a>
                 </p>
             </div>
+        </div>
     </header>
 
     <div class="container">
@@ -50,7 +50,80 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        // Función para manejar el inicio de sesión
+        async function iniciarSesion() {
+            const correo = document.getElementById('correo').value;
+            const contraseña = document.getElementById('contraseña').value;
+
+            if (!correo || !contraseña) {
+                alert("Por favor, ingrese correo y contraseña.");
+                return;
+            }
+
+            const datos = {
+                Correo: correo,
+                Contraseña: contraseña
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/cliente/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                if (response.ok) {
+                    const cliente = await response.json();
+                    localStorage.setItem('cliente', JSON.stringify(cliente)); // Guardar cliente en localStorage
+                    document.getElementById('login-container').innerHTML = `
+                        <span>Hola, ${cliente.Nombre}</span>
+                        <button onclick="cerrarSesion()">Cerrar sesión</button>
+                    `;
+                } else {
+                    alert("Correo o contraseña incorrectos.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Ocurrió un error al iniciar sesión.");
+            }
+        }
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            localStorage.removeItem('cliente');
+            location.reload(); // Recargar la página para que se actualice el estado
+        }
+
+        // Toggle para mostrar/ocultar el formulario de login
+        function toggleLogin() {
+            const loginDropdown = document.querySelector('.login-dropdown');
+            const loginButton = document.querySelector('.login-button');
+
+            if (loginDropdown.style.display === 'none' || loginDropdown.style.display === '') {
+                loginDropdown.style.display = 'block';
+                loginButton.style.display = 'none';
+            } else {
+                loginDropdown.style.display = 'none';
+                loginButton.style.display = 'block';
+            }
+        }
+
+        // Función que se ejecuta al cargar la página, verificando si hay usuario logueado
+        window.onload = function() {
+            // Si ya hay un cliente logueado, mostrar su nombre
+            const cliente = JSON.parse(localStorage.getItem('cliente'));
+            if (cliente) {
+                document.getElementById('login-container').innerHTML = `
+                    <span>Hola, ${cliente.Nombre}</span>
+                    <button onclick="cerrarSesion()">Cerrar sesión</button>
+                `;
+            } else {
+                const loginDropdown = document.querySelector('.login-dropdown');
+                loginDropdown.style.display = 'none';
+            }
+
             const productData = JSON.parse(localStorage.getItem("selectedProduct"));
             if (productData) {
                 document.getElementById("productImage").src = productData.image;
@@ -64,7 +137,7 @@
                 document.getElementById("productOldPrice").textContent = productData.oldPrice;
                 document.getElementById("productDescription").textContent = productData.description;
             }
-        });
+        };
     </script>
 </body>
 </html>

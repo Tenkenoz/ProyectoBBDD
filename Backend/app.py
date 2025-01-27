@@ -77,55 +77,6 @@ def put_producto(id_producto):
     else:
         return jsonify({"message": "Producto no encontrado"}), 404
 
-@app.route('/carrito', methods=['GET'])
-def get_carrito():
-    # Obtener el carrito como una lista de IDs de productos
-    carrito = list(carrito_collection.find({}, {'_id': 0, 'Id_Producto': 1}))
-    carrito_ids = [item['Id_Producto'] for item in carrito]  # Extraer solo los IDs de los productos
-
-    productos_completos = []
-
-    for producto_id in carrito_ids:
-        # Buscar el producto completo en la base de datos
-        producto = productos_collection.find_one({"Id_Producto": producto_id}, {'_id': 0})
-        
-        if producto:
-            # Supongamos que la cantidad está siempre fija (puede ajustarse según los requerimientos)
-            producto['Cantidad'] = 1  # O puedes calcular la cantidad de otra forma
-            producto['PrecioTotal'] = producto['Precio'] * producto['Cantidad']
-            productos_completos.append(producto)
-
-    subtotal = sum(item['PrecioTotal'] for item in productos_completos)
-    cantidad_total = sum(item['Cantidad'] for item in productos_completos)
-
-    return jsonify({
-        'productos': productos_completos,
-        'subtotal': subtotal,
-        'cantidad_total': cantidad_total
-    })
-
-@app.route('/carrito', methods=['POST'])
-def add_to_carrito():
-    data = request.get_json()  # Recibir datos en formato JSON
-    
-    if not data or 'Id_Producto' not in data:
-        return jsonify({'error': 'El campo Id_Producto es obligatorio'}), 400
-    
-    producto_id = data['Id_Producto']
-    
-    # Verificar si el producto existe en la colección de productos
-    producto = productos_collection.find_one({"Id_Producto": producto_id})
-    if not producto:
-        return jsonify({'error': 'El producto no existe'}), 404
-    
-    # Agregar el ID del producto al carrito solo si no existe ya
-    if carrito_collection.find_one({'Id_Producto': producto_id}):
-        return jsonify({'error': 'El producto ya está en el carrito'}), 400
-    
-    carrito_collection.insert_one({'Id_Producto': producto_id})
-    return jsonify({'mensaje': 'Producto agregado al carrito con éxito'}), 201
-
-
 @app.route('/compra', methods=['POST'])
 def confirmar_compra():
     try:
@@ -182,7 +133,118 @@ def add_tarjeta():
     tarjeta_collection.insert_one(data)
     return jsonify({"mensaje": "Tarjeta registrada con éxito"}), 201
 
+# Ruta para registrar un cliente
+@app.route('/cliente', methods=['POST'])
+def add_cliente():
+    try:
+        # Obtener los datos del cliente desde la solicitud
+        data = request.get_json()
 
+        # Validar que los campos necesarios estén presentes
+        nombre = data.get('Nombre')
+        edad = data.get('Edad')
+        correo = data.get('Correo')
+        telefono = data.get('Telefono')
+        contraseña = data.get('Contraseña')
+
+        if not all([nombre, edad, correo, telefono, contraseña]):
+            return jsonify({"error": "Todos los campos son obligatorios"}), 400
+
+        # Verificar si el correo o teléfono ya existe
+        if cliente_collection.find_one({"Correo": correo}) or cliente_collection.find_one({"Telefono": telefono}):
+            return jsonify({"error": "El correo o teléfono ya está registrado"}), 400
+
+        # Insertar el cliente en la colección
+        cliente_collection.insert_one({
+            "Nombre": nombre,
+            "Edad": edad,
+            "Correo": correo,
+            "Telefono": telefono,
+            "Contraseña": contraseña,
+            "Carrito": [],
+            "Pago": []
+        })
+
+        return jsonify({"mensaje": "Cliente registrado con éxito"}), 201
+
+    except Exception as e:
+        return jsonify({"error": f"Ocurrió un error: {str(e)}"}), 500
+
+@app.route('/cliente/login', methods=['POST'])
+def login_cliente():
+    data = request.get_json()
+
+    # Validar que se recibieron los datos necesarios
+    correo = data.get('Correo')
+    contraseña = data.get('Contraseña')
+
+    if not correo or not contraseña:
+        return jsonify({"error": "Correo y contraseña son requeridos"}), 400
+
+    # Buscar al cliente en la base de datos
+    cliente = cliente_collection.find_one({"Correo": correo, "Contraseña": contraseña})
+
+    if cliente:
+        # Convertir el ObjectId a string si es necesario
+        cliente = convert_objectid_to_str(cliente)
+        return jsonify(cliente), 200
+    else:
+        return jsonify({"error": "Correo o contraseña incorrectos"}), 401
+
+@app.route("/carrito/agregar", methods=["POST"])
+def agregar_al_carrito():
+    data = request.json
+    cliente_id = data.get("cliente_id")  # ID del cliente logueado
+    producto_id = data.get("producto_id")  # ID del producto que se va a agregar
+
+    if not cliente_id or not producto_id:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    # Convertir el producto_id a entero
+    try:
+        producto_id = int(producto_id)  # Convertir a entero
+    except ValueError:
+        return jsonify({"error": "El producto_id debe ser un número entero válido"}), 400
+
+    # Buscar al cliente por su ID
+    cliente = cliente_collection.find_one({"_id": ObjectId(cliente_id)})
+    if not cliente:
+        return jsonify({"error": "Cliente no encontrado"}), 404
+
+    # Verificar si el producto existe en la base de datos
+    producto = productos_collection.find_one({"Id_Producto": producto_id})
+    if not producto:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    # Obtener el carrito del cliente
+    carrito = cliente.get("Carrito",[])
+
+    # Evitar duplicados
+    if producto_id not in carrito:
+        carrito.append(producto_id)
+        # Actualizar el carrito del cliente en la base de datos
+        cliente_collection.update_one({"_id": ObjectId(cliente_id)}, {"$set": {"Carrito": carrito}})
+
+    return jsonify({"mensaje": "Producto agregado al carrito"}), 200
+
+# Obtener los productos en el carrito de un cliente
+@app.route('/carrito/<cliente_id>', methods=['GET'])
+def get_carrito(cliente_id):
+    cliente = cliente_collection.find_one({"_id": ObjectId(cliente_id)})
+    if not cliente:
+        return jsonify({"error": "Cliente no encontrado"}), 404
+
+    # Obtener los IDs de los productos en el carrito del cliente
+    carrito_ids = cliente.get("Carrito", [])
+
+    # Buscar los productos correspondientes
+    productos_carrito = []
+    for producto_id in carrito_ids:
+        producto = productos_collection.find_one({"Id_Producto": producto_id}, {'_id': 0})
+        if producto:
+            productos_carrito.append(producto)
+
+    return jsonify({"productos": productos_carrito}), 200
 
 
 
