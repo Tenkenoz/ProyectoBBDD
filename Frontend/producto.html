@@ -1,142 +1,223 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Online</title>
-    <link rel="stylesheet" href="Estilos/producto.css">
     <style>
-        .contenedor-productos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px;
-        }
-        .producto {
-            background-color: #fff;
-            width: 250px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .producto img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            background-color: #f9f9f9;
-            padding: 10px;
-        }
-        .producto div {
-            padding: 15px;
-        }
-        .producto h3 {
-            font-size: 18px;
-            color: #232f3e;
-            margin: 0;
-        }
-        .producto p {
-            font-size: 16px;
-            color: #ff9900;
-            margin: 10px 0;
-        }
-        .producto button {
-            padding: 10px;
-            background-color: #ff9900;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-        }
+        body { font-family: Arial, sans-serif; background-color: #F2F2F2; color: #333; margin: 0; padding: 0; }
+        header { background-color: #0D0D0D; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; }
+        h1 { text-align: center; color: #0D0D0D; }
+        #contenedor-productos { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px; }
+        .producto { background-color: #fff; width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; }
+        .producto img { width: 100%; height: 200px; object-fit: contain; }
+        .producto button { background-color: #A61717; color: #fff; border: none; padding: 10px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .login-dropdown { display: none; background-color: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ddd; }
+        .login-button { cursor: pointer; padding: 5px 10px; background-color: #A61717; color: white; border-radius: 5px; }
+        .create-account a { color: #A61717; text-decoration: none; }
+        .login-container { display: flex; align-items: center; }
+        .login-container span { margin-right: 10px; }
+        .login-dropdown input, .login-dropdown button { margin: 5px 0; width: 100%; padding: 8px; }
     </style>
 </head>
 <body>
     <header>
-        <div>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Logo de Amazon" style="height: 40px;">
+        <div class="header-logo">
+            <h1><i class="fas fa-shopping-cart"></i> Tienda Online</h1>
         </div>
-        <div>
-            <input type="text" id="search-input" placeholder="Buscar productos">
-            <button onclick="buscarProductos()">Buscar</button>
-        </div>
-        <div>
-            <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Anónimo</a>
-            <a href="#" style="background-color: #ff9900; color: #fff; padding: 8px 15px; border-radius: 5px; text-decoration: none; display: flex; align-items: center;">
-                <img src="https://via.placeholder.com/24?text=🛒" alt="Carrito" style="margin-right: 5px;">
-                <span id="carrito-count">0</span>
-            </a>
+        <div id="login-container" class="login-container">
+            <!-- Si no hay usuario logueado, mostrar los campos de login -->
+            <div class="login-button" onclick="toggleLogin()">Iniciar sesión</div>
+            <div class="login-dropdown">
+                <input type="text" id="correo" placeholder="Correo" />
+                <input type="password" id="contraseña" placeholder="Contraseña" />
+                <button onclick="iniciarSesion()">Acceder</button>
+                <p class="create-account">
+                    <a href="login.html">Crear cuenta</a>
+                </p>
+            </div>
+
         </div>
     </header>
-
-    <h1>Nuestros Productos</h1>
-
-    <div id="categorias">
-        <!-- Las categorías se crearán dinámicamente aquí -->
-    </div>
-
-    <footer>
-        <p>© 2025 Tienda Online. Todos los derechos reservados.</p>
-    </footer>
-
+    <a href="carrito.html"><i class="fas fa-shopping-cart">sdasdasd</i></a>
+    <div id="contenedor-productos"></div>
     <script>
-        async function cargarProductos() {
-            try {
-                const response = await fetch('http://localhost:5000/productos');
-                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-                const productos = await response.json();
+  // Toggle para mostrar/ocultar el formulario de login
+function toggleLogin() {
+    const loginDropdown = document.querySelector('.login-dropdown');
+    const loginButton = document.querySelector('.login-button');
 
-                const categoriasContainer = document.getElementById("categorias");
-                const productosPorCategoria = {};
+    if (loginDropdown.style.display === 'none' || loginDropdown.style.display === '') {
+        loginDropdown.style.display = 'block';
+        loginButton.style.display = 'none';
+    } else {
+        loginDropdown.style.display = 'none';
+        loginButton.style.display = 'block';
+    }
+}
 
-                productos.forEach((producto) => {
-                    const categoria = producto.Categoria || "Sin categoría";
-                    if (!productosPorCategoria[categoria]) {
-                        productosPorCategoria[categoria] = [];
-                    }
-                    productosPorCategoria[categoria].push(producto);
-                });
+// Función para manejar el inicio de sesión
+async function iniciarSesion() {
+    const correo = document.getElementById('correo').value;
+    const contraseña = document.getElementById('contraseña').value;
 
-                for (const categoria in productosPorCategoria) {
-                    const tituloCategoria = document.createElement("h2");
-                    tituloCategoria.textContent = categoria;
-                    categoriasContainer.appendChild(tituloCategoria);
+    if (!correo || !contraseña) {
+        alert("Por favor, ingrese correo y contraseña.");
+        return;
+    }
 
-                    const contenedorProductos = document.createElement("div");
-                    contenedorProductos.className = "contenedor-productos";
-                    categoriasContainer.appendChild(contenedorProductos);
+    const datos = {
+        Correo: correo,
+        Contraseña: contraseña
+    };
 
-                    productosPorCategoria[categoria].forEach((producto) => {
-                        const precio = producto.Precio || 'N/A';
-                        const rating = producto.Rating || 'N/A';
-                        const productoHTML = `
-                            <div class="producto">
-                                <img src="${producto.Imagen}" alt="${producto.Nombre}">
-                                <div>
-                                    <h3>${producto.Nombre}</h3>
-                                    <p>Precio: $${precio}</p>
-                                    <p>Rating: ${rating} ⭐</p>
-                                    <button onclick="irADetalles('${producto.Id_Producto}')">Mostrar más información</button>
-                                    <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
-                                </div>
-                            </div>
-                        `;
-                        contenedorProductos.innerHTML += productoHTML;
-                    });
-                }
-            } catch (error) {
-                console.error('Error al cargar los productos:', error);
-            }
+    try {
+        const response = await fetch('http://localhost:5000/cliente/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        if (response.ok) {
+            const cliente = await response.json();
+            localStorage.setItem('cliente', JSON.stringify(cliente)); // Guardar cliente en localStorage
+            document.getElementById('login-container').innerHTML = `
+                <span>Hola, ${cliente.Nombre}</span>
+                <button onclick="cerrarSesion()">Cerrar sesión</button>
+            `;
+            cargarProductos(); // Recargar los productos después de iniciar sesión
+        } else {
+            alert("Correo o contraseña incorrectos.");
         }
+    } catch (error) {
+        console.error(error);
+        alert("Ocurrió un error al iniciar sesión.");
+    }
+}
 
-        function irADetalles(idProducto) {
-            window.location.href = `detalles_producto.html?id=${idProducto}`;
-        }
+// Función para cerrar sesión
+function cerrarSesion() {
+    localStorage.removeItem('cliente');
+    location.reload(); // Recargar la página para que se actualice el estado
+}
 
-        window.onload = cargarProductos;
+// Función para cargar productos al inicio
+async function cargarProductos() {
+    try {
+        const response = await fetch('http://localhost:5000/productos');
+        if (!response.ok) throw new Error('Error al obtener productos');
+        const productos = await response.json();
+        const contenedor = document.getElementById("contenedor-productos");
+
+        contenedor.innerHTML = ""; // Limpiar productos antes de cargarlos
+
+        productos.forEach(producto => {
+            const productoHTML = `
+                <div class="producto">
+                    <img src="${producto.Imagen || 'https://via.placeholder.com/200'}" alt="${producto.Nombre}">
+                    <h3>${producto.Nombre}</h3>
+                    <p>Precio: $${producto.Precio}</p>
+                    <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
+                    <button onclick="verDetalles('${producto.Id_Producto}', '${producto.Nombre}', '${producto.Imagen}', '${producto.Precio}', '${producto.Descripcion}')">Información del Producto</button>
+                </div>
+            `;
+            contenedor.innerHTML += productoHTML;
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Función para ver los detalles del producto
+function verDetalles(id, nombre, imagen, precio, descripcion) {
+    const productData = { id, title: nombre, image: imagen, price: precio, description: descripcion };
+    localStorage.setItem("selectedProduct", JSON.stringify(productData));
+    window.location.href = "index.html";
+}
+
+async function agregarAlCarrito(productId) {
+    const cliente = JSON.parse(localStorage.getItem('cliente'));  // Obtén el cliente logueado desde localStorage
+    if (!cliente) {
+        alert("Debes estar logueado para agregar productos al carrito");
+        return;
+    }
+
+    const clienteId = cliente._id;  // Obtener el ID del cliente desde el localStorage
+
+    const response = await fetch('http://localhost:5000/carrito/agregar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cliente_id: clienteId,  // Enviar el ID del cliente
+            producto_id: productId, // Enviar el ID del producto
+        }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert("Producto agregado al carrito");
+    } else {
+        alert(data.error || "Ocurrió un error al agregar el producto al carrito");
+    }
+}
+
+// Función para verificar si el usuario ya está logueado al cargar la página
+window.onload = function() {
+    // Si ya hay un cliente logueado, mostrar su nombre
+    const cliente = JSON.parse(localStorage.getItem('cliente'));
+    if (cliente) {
+        document.getElementById('login-container').innerHTML = `
+            <span>Hola, ${cliente.Nombre}</span>
+            <button onclick="cerrarSesion()">Cerrar sesión</button>
+        `;
+    }
+
+    cargarProductos(); // Siempre cargar los productos, independientemente de si el usuario está logueado
+};
+
+// Para la página del carrito (carrito.html)
+document.addEventListener("DOMContentLoaded", function() {
+    const cliente = JSON.parse(localStorage.getItem('cliente'));
+    
+    if (cliente) {
+        // Mostrar nombre del cliente en el carrito
+        document.getElementById('cliente-info').innerHTML = `
+            <p>Bienvenido, ${cliente.Nombre}</p>
+            <button onclick="cerrarSesion()">Cerrar sesión</button>
+        `;
+    } else {
+        
+    }
+
+    cargarCarrito(); // Cargar los productos del carrito
+});
+
+// Función para cargar los productos del carrito
+async function cargarCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('cartData')) || []; // Obtener productos del carrito
+
+    // Si el carrito está vacío, mostrar un mensaje
+    if (carrito.length === 0) {
+        document.getElementById('carrito-vacio').innerHTML = 'Tu carrito está vacío.';
+    } else {
+        // Mostrar los productos en el carrito
+        const carritoContenedor = document.getElementById('carrito-productos');
+        carrito.forEach(producto => {
+            const item = document.createElement('li');
+            item.textContent = `${producto.Nombre} - $${producto.PrecioTotal}`;
+            carritoContenedor.appendChild(item);
+        });
+    }
+}
+
+// Función para cerrar sesión en carrito
+function cerrarSesion() {
+    localStorage.removeItem('cliente'); // Eliminar el cliente del localStorage
+    window.location.href = 'login.html'; // Redirigir al login
+}
+
     </script>
 </body>
 </html>
