@@ -21,15 +21,12 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-<<<<<<< HEAD
             transition: transform 0.3s ease, width 0.3s ease, border 0.3s ease; /* Transición suave */
         }
         .producto.zoom {
             width: 500px; /* Ancho expandido */
             transform: scale(1.1); /* Efecto de zoom */
             border: 3px solid #ff9900; /* Borde llamativo */
-=======
->>>>>>> productos
         }
         .producto img {
             width: 100%;
@@ -61,7 +58,6 @@
             width: 100%;
             margin-bottom: 10px;
         }
-<<<<<<< HEAD
         .detalles-adicionales {
             display: none; /* Ocultar por defecto */
             padding: 10px;
@@ -95,14 +91,11 @@
             text-decoration: none;
             cursor: pointer;
         }
-=======
->>>>>>> productos
     </style>
 </head>
 <body>
     <header>
         <div>
-<<<<<<< HEAD
             <button class="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
         </div>
         <div>
@@ -110,20 +103,6 @@
         </div>
         <div>
             <input type="text" id="search-input" placeholder="Buscar productos" oninput="buscarProductos()">
-=======
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Logo de Amazon" style="height: 40px;">
-        </div>
-        <div>
-            <input type="text" id="search-input" placeholder="Buscar productos">
-            <button onclick="buscarProductos()">Buscar</button>
-        </div>
-        <div>
-            <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Anónimo</a>
-            <a href="#" style="background-color: #ff9900; color: #fff; padding: 8px 15px; border-radius: 5px; text-decoration: none; display: flex; align-items: center;">
-                <img src="https://via.placeholder.com/24?text=🛒" alt="Carrito" style="margin-right: 5px;">
-                <span id="carrito-count">0</span>
-            </a>
->>>>>>> productos
         </div>
     </header>
 
@@ -174,16 +153,11 @@
                                     <h3>${producto.Nombre}</h3>
                                     <p>Precio: $${precio}</p>
                                     <p>Rating: ${rating} ⭐</p>
-<<<<<<< HEAD
                                     <button onclick="mostrarDetalles('${producto.Id_Producto}', this)">Mostrar detalles</button>
                                     <button onclick="comprarProducto('${producto.Id_Producto}')">Comprar</button>
                                     <div class="detalles-adicionales" id="detalles-${producto.Id_Producto}">
                                         ${generarDetallesProducto(producto)}
                                     </div>
-=======
-                                    <button onclick="irADetalles('${producto.Id_Producto}')">Mostrar más información</button>
-                                    <button onclick="agregarAlCarrito('${producto.Id_Producto}')">Agregar al carrito</button>
->>>>>>> productos
                                 </div>
                             </div>
                         `;
@@ -195,7 +169,6 @@
             }
         }
 
-<<<<<<< HEAD
         function generarDetallesProducto(producto) {
             let detallesHTML = '';
             for (const [key, value] of Object.entries(producto)) {
@@ -245,10 +218,6 @@
             alert("Sesión cerrada. Redirigiendo...");
             // Aquí puedes agregar la lógica para cerrar la sesión y redirigir al usuario
             window.location.href = "login.html"; // Cambia "login.html" por la URL de tu página de inicio de sesión
-=======
-        function irADetalles(idProducto) {
-            window.location.href = `detalles_producto.html?id=${idProducto}`;
->>>>>>> productos
         }
 
         window.onload = cargarProductos;
