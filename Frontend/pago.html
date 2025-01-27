@@ -23,7 +23,7 @@
         </nav>
         <div class="login-container">
             <div class="login-button">
-                <!-- Este es el espacio donde se debe mostrar el nombre del cliente -->
+                <!-- Mostrar el nombre del cliente -->
                 Anónimo <i class="fas fa-user"></i>
             </div>
         </div>
@@ -49,18 +49,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // Recuperamos los datos del cliente y carrito desde localStorage
             const cliente = JSON.parse(localStorage.getItem('cliente'));
             const cartData = JSON.parse(localStorage.getItem('cartData')) || [];
             const subtotal = parseFloat(localStorage.getItem('subtotal')) || 0;
             const impuestos = parseFloat(localStorage.getItem('impuestos')) || 0;
             const total = subtotal + impuestos;
 
-            // Mostrar el nombre del cliente
+            // Mostrar el nombre del cliente si está logueado
             if (cliente) {
                 document.querySelector('.login-button').innerHTML = `Hola, ${cliente.Nombre} <i class="fas fa-user"></i>`;
+            } else {
+                document.querySelector('.login-button').innerHTML = `Anónimo <i class="fas fa-user"></i>`;
             }
 
-            // Rellenar la vista del carrito
+            // Rellenar la vista del carrito con los productos
             if (cartData.length > 0) {
                 const orderSummary = document.getElementById('order-summary-list');
                 cartData.forEach(product => {
@@ -85,18 +88,20 @@
                     return;
                 }
 
-                // Preparar los datos a enviar
+                // Preparar los datos a enviar con el cliente y carrito
                 const data = {
+                    cliente_id: cliente._id,
                     productos: cartData.map(product => ({
                         Id_Producto: product.Id_Producto,
-                        PrecioTotal: product.PrecioTotal
+                        Nombre: product.Nombre,
+                        PrecioTotal: product.Precio
                     })),
                     subtotal: subtotal,
                     impuestos: impuestos,
                     total: total
                 };
 
-                // Enviar los datos al backend
+                // Enviar los datos al backend para realizar la compra
                 fetch('http://localhost:5000/compra', {
                     method: 'POST',
                     headers: {

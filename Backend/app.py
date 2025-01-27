@@ -82,7 +82,6 @@ def add_cliente():
         # Hashear la contraseña antes de guardarla
         data['Contraseña'] = generate_password_hash(data['Contraseña'])
         data['Carrito'] = []
-        data['Pago'] = []
         cliente_collection.insert_one(data)
 
         return jsonify({"mensaje": "Cliente registrado con éxito"}), 201
