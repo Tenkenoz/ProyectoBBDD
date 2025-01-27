@@ -23,7 +23,8 @@
         </nav>
         <div class="login-container">
             <div class="login-button">
-                Anonimo <i class="fas fa-user"></i> 
+                <!-- Este es el espacio donde se debe mostrar el nombre del cliente -->
+                Anónimo <i class="fas fa-user"></i>
             </div>
         </div>
     </header>
@@ -48,17 +49,23 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const cliente = JSON.parse(localStorage.getItem('cliente'));
             const cartData = JSON.parse(localStorage.getItem('cartData')) || [];
             const subtotal = parseFloat(localStorage.getItem('subtotal')) || 0;
             const impuestos = parseFloat(localStorage.getItem('impuestos')) || 0;
             const total = subtotal + impuestos;
+
+            // Mostrar el nombre del cliente
+            if (cliente) {
+                document.querySelector('.login-button').innerHTML = `Hola, ${cliente.Nombre} <i class="fas fa-user"></i>`;
+            }
 
             // Rellenar la vista del carrito
             if (cartData.length > 0) {
                 const orderSummary = document.getElementById('order-summary-list');
                 cartData.forEach(product => {
                     const item = document.createElement('li');
-                    item.innerHTML = `${product.Nombre}: <span>$${product.PrecioTotal.toFixed(2)}</span>`;
+                    item.innerHTML = `${product.Nombre}: <span>$${product.Precio.toFixed(2)}</span>`;
                     orderSummary.appendChild(item);
                 });
                 document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
@@ -78,21 +85,18 @@
                     return;
                 }
 
-                // Obtener la información del carrito
-                const carritoData = cartData.map(product => ({
-                    Id_Producto: product.Id_Producto,
-                    PrecioTotal: product.PrecioTotal
-                }));
-
                 // Preparar los datos a enviar
                 const data = {
-                    productos: carritoData,
+                    productos: cartData.map(product => ({
+                        Id_Producto: product.Id_Producto,
+                        PrecioTotal: product.PrecioTotal
+                    })),
                     subtotal: subtotal,
                     impuestos: impuestos,
                     total: total
                 };
 
-                // Enviar los datos al backend para realizar la compra
+                // Enviar los datos al backend
                 fetch('http://localhost:5000/compra', {
                     method: 'POST',
                     headers: {
@@ -104,7 +108,6 @@
                 .then(data => {
                     if (data.mensaje) {
                         showToast('Compra realizada con éxito', 'success');
-                        // Limpiar el carrito después de la compra
                         localStorage.removeItem('cartData');
                         localStorage.removeItem('subtotal');
                         localStorage.removeItem('impuestos');

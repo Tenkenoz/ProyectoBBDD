@@ -55,8 +55,8 @@
             if (cliente) {
                 loginButton.innerHTML = `Hola, ${cliente.Nombre} <i class="fas fa-user"></i>`;
 
-                // Cargar el carrito desde el backend
-                fetch(`/carrito/${cliente._id}`)
+                // Cambia esta URL para que apunte a tu servidor local de Flask
+                fetch(`http://127.0.0.1:5000/carrito/${cliente._id}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('No se pudo cargar el carrito');
@@ -65,7 +65,7 @@
                     })
                     .then(data => {
                         if (data.productos && data.productos.length > 0) {
-                            cargarCarrito(data.productos);
+                            cargarCarrito(data.productos, cliente);
                         } else {
                             document.getElementById('cart-items').innerHTML = '<p>No tienes productos en tu carrito.</p>';
                         }
@@ -79,7 +79,7 @@
             }
         };
 
-        function cargarCarrito(productos) {
+        function cargarCarrito(productos, cliente) {
             const cartItemsDiv = document.getElementById('cart-items');
             const subtotalElement = document.getElementById('subtotal');
             const totalItemsElement = document.getElementById('total-items');
@@ -92,19 +92,46 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add('cart-item');
 
-                itemDiv.innerHTML = `
-                    <p>${producto.Nombre}</p>
-                    <p>Precio: US$${producto.PrecioTotal.toFixed(2)}</p>
-                `;
-
-                subtotal += producto.PrecioTotal;
-                cantidadTotal++;
+                // Verificar si el precio existe antes de intentar usar toFixed()
+                const precioTotal = producto.Precio;
+                if (precioTotal === undefined || precioTotal === null) {
+                    itemDiv.innerHTML = ` 
+                        <p>${producto.Nombre}</p>
+                        <p>Precio no disponible</p>
+                    `;
+                } else {
+                    itemDiv.innerHTML = ` 
+                        <p>${producto.Nombre}</p>
+                        <p>Precio: US$${precioTotal.toFixed(2)}</p>
+                    `;
+                    subtotal += precioTotal;
+                    cantidadTotal++;
+                }
 
                 cartItemsDiv.appendChild(itemDiv);
             });
 
-            subtotalElement.textContent = `Subtotal: US$${subtotal.toFixed(2)}`;
-            totalItemsElement.textContent = `Cantidad total: ${cantidadTotal}`;
+            // Solo actualizar los totales si hay productos
+            if (cantidadTotal > 0) {
+                subtotalElement.textContent = `Subtotal: US$${subtotal.toFixed(2)}`;
+                totalItemsElement.textContent = `Cantidad total: ${cantidadTotal}`;
+            } else {
+                subtotalElement.textContent = `Subtotal: US$0.00`;
+                totalItemsElement.textContent = `Cantidad total: 0`;
+            }
+
+            // Almacenar los datos del carrito y del cliente
+            document.getElementById('checkout-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevenir el envío del formulario
+
+                // Almacenar los datos del carrito y del cliente
+                localStorage.setItem('cartData', JSON.stringify(productos));
+                localStorage.setItem('subtotal', subtotal);
+                localStorage.setItem('cliente', JSON.stringify(cliente));
+
+                // Redirigir a la página de pago
+                window.location.href = "pago.html";
+            });
         }
     </script>
 </body>
