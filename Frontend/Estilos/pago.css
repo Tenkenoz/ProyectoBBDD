@@ -32,6 +32,7 @@ body {
     color: #FFD700;
 }
 
+
 .header-nav ul {
     list-style: none;
     display: flex;
@@ -84,33 +85,6 @@ body {
     color: #D91E1E;
 }
 
-/* Opciones de pago */
-.payment-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.payment-options div {
-    background-color: #FFF;
-    border: 1px solid #DDD;
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.payment-options div:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.payment-options .disabled {
-    color: #A61717;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
 /* Resumen de la orden */
 .order-summary {
     position: absolute;
@@ -152,13 +126,13 @@ body {
     background-color: #D91E1E;
     color: #FFF;
     border: none;
-    padding: 0.5rem; /* Reducido desde 0.75rem */
+    padding: 0.5rem;
     cursor: pointer;
     border-radius: 5px;
     font-weight: bold;
     text-align: center;
     width: 100%;
-    font-size: 0.9rem; /* Reducido para hacer el texto más pequeño */
+    font-size: 0.9rem;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -230,4 +204,154 @@ input, select {
 .login-button:hover {
     background-color: #ffffff;
     transform: scale(1.05);
+}
+
+/* Formulario de dirección */
+#address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#address-form label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #D91E1E;
+}
+
+#address-form input,
+#address-form select {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    width: 95%;
+    background-color: #FFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+#address-form button {
+    background-color: #D91E1E;
+    color: #FFF;
+    border: none;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+}
+
+
+
+#address-form button:hover {
+    background-color: #A61717;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.existing-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    background: #FFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.existing-address:hover {
+    border-color: #D91E1E;
+    transform: scale(1.02);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: #DDD;
+    margin: 20px 0;
+}
+
+.address-selection p {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+.inline-fields {
+    display: flex;
+    gap: 15px;
+    width: 97%;
+}
+
+/* Adaptación responsiva */
+@media (max-width: 768px) {
+    #address-form button {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+
+    .existing-address {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+
+/* Estilo de formulario de pago */
+#payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#payment-form label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #D91E1E;
+}
+
+#payment-form input,
+#payment-form select {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    width: 95%;
+    background-color: #FFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#payment-form button {
+    background-color: #D91E1E;
+    color: #FFF;
+    border: none;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+}
+
+#payment-form button:hover {
+    background-color: #A61717;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.inline-fields {
+    display: flex;
+    gap: 15px;
+    width: 97%;
 }

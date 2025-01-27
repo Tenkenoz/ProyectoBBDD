@@ -16,9 +16,7 @@
         <nav class="header-nav">
             <ul>
                 <li><a href="#shipping"><i class="fas fa-map-marker-alt"></i> Dirección de Envío</a></li>
-                <li><a href="#customs"><i class="fas fa-box"></i> Despacho Aduanero</a></li>
                 <li><a href="#payment"><i class="fas fa-credit-card"></i> Método de Pago</a></li>
-                <li><a href="#offers"><i class="fas fa-tags"></i> Ofertas</a></li>
             </ul>
         </nav>
         <div class="login-container">
@@ -32,7 +30,76 @@
     <main class="container">
         <section class="flex-container" id="shipping">
             <h2><i class="fas fa-map-marker-alt"></i> Dirección de Envío</h2>
-            <div class="content" id="shipping-address">Cargando dirección...</div>
+            <form id="address-form">
+                <label for="name">Nombre completo:</label>
+                <input type="text" id="name" name="name" placeholder="Ingresa tu nombre completo" required />
+
+                <label for="name">Numero de Telefono:</label>
+                <input type="text" id="name" name="name" placeholder="Ingresa tu umero de telefono" required />
+        
+                <label for="street">Línea de dirección 1:</label>
+                <input type="text" id="street" name="street" placeholder="Ej. Calle Principal 123" required />
+        
+                <label for="additional-info">Línea de dirección 2:</label>
+                <input type="text" id="additional-info" name="additional-info" placeholder="Ej. Piso 2, departamento 5" />
+        
+                <div class="inline-fields">
+                    <div>
+                        <label for="city">Ciudad:</label>
+                        <input type="text" id="city" name="city" placeholder="Ej. Ciudad de México" required />
+                    </div>
+                    <div>
+                        <label for="state">Estado/Provincia:</label>
+                        <input type="text" id="state" name="state" placeholder="Ej. CDMX" required />
+                    </div>
+                    <div>
+                        <label for="zip">Código postal:</label>
+                        <input type="text" id="zip" name="zip" placeholder="Ej. 12345" required />
+                    </div>
+                </div>
+        
+                <label for="country">País:</label>
+                <select id="country" name="country" required>
+                    <option value="Mexico">México</option>
+                    <option value="USA">Estados Unidos</option>
+                    <option value="Canada">Canadá</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Peru">Perú</option>
+                </select>
+        
+                <button type="submit" class="btn">Usar esta dirección</button>
+            </form>
+        </section>
+
+        <section class="flex-container" id="payment">
+            <h2><i class="fas fa-credit-card"></i> Información de Pago</h2>
+            <form id="payment-form">
+                <label for="card-name">Nombre en la tarjeta:</label>
+                <input type="text" id="card-name" name="card-name" placeholder="Ingresa el nombre que aparece en la tarjeta" required />
+    
+                <label for="card-number">Número de tarjeta:</label>
+                <input type="text" id="card-number" name="card-number" placeholder="Ingresa el número de tu tarjeta" required />
+    
+                <div class="inline-fields">
+                    <div>
+                        <label for="expiry-month">Mes de expiración:</label>
+                        <input type="number" id="expiry-month" name="expiry-month" placeholder="MM" min="01" max="12" required />
+                    </div>
+                    
+                    <div>
+                        <label for="expiry-year">Año de expiración:</label>
+                        <input type="number" id="expiry-year" name="expiry-year" placeholder="AAAA" min="2025" required />
+                    </div>
+                    <div>
+                        <label for="cvv">Código de seguridad (CVV):</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="Ingresa el CVV" required />
+                    </div>
+                </div>    
+                <button type="submit" class="btn">Confirmar Pago</button>
+            </form>
         </section>
 
         <aside class="order-summary">
