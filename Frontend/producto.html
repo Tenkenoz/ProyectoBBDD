@@ -202,6 +202,115 @@
             text-decoration: none;
             cursor: pointer;
         }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .cerrar-sesion {
+            background-color: #ff9900;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .cerrar-sesion:hover {
+            background-color: #e68a00;
+        }
+
+        .login-container {
+            position: relative;
+        }
+
+        .login-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .login-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+
+        .login-dropdown input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .login-dropdown button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .login-dropdown button:hover {
+            background-color: #218838;
+        }
+
+        .create-account a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+
+        .carrito-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #ff9900;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 20px;
+        }
+
+        .carrito-link i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        .carrito-link:hover {
+            background-color: #e68a00;
+        }
     </style>
 </head>
 <body>
@@ -223,9 +332,14 @@
                 </p>
             </div>
         </div>
+        <!-- Carrito de compras -->
+        <div>
+            <a href="carrito.html" class="carrito-link">
+                <i class="fas fa-shopping-cart"></i> Ver Carrito
+            </a>
+        </div>
     </header>
 
-    <a href="carrito.html"><i class="fas fa-shopping-cart">Carrito</i></a>
 
     <h1>Nuestros Productos</h1>
     <div id="contenedor-productos"></div>
@@ -272,7 +386,7 @@
                     localStorage.setItem('cliente', JSON.stringify(cliente));
                     document.getElementById('login-container').innerHTML = 
                         `<span>Hola, ${cliente.Nombre}</span>
-                        <button onclick="cerrarSesion()">Cerrar sesión</button>`;
+                        `;
                     cargarProductos();
                 } else {
                     alert("Correo o contraseña incorrectos.");
@@ -390,7 +504,7 @@
             if (cliente) {
                 document.getElementById('login-container').innerHTML = 
                     `<span>Hola, ${cliente.Nombre}</span>
-                    <button onclick="cerrarSesion()">Cerrar sesión</button>`;
+                    `;
             }
 
             cargarProductos();
